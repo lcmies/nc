@@ -44,7 +44,7 @@ func main() {
 
 		limit := query.Get("limit")
 		if limit == "" {
-			limit = "1"
+			limit = "20"
 		}
 		limitNum, err := strconv.Atoi(limit)
 		if err != nil {

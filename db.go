@@ -59,6 +59,7 @@ func InsertSession(db *sql.DB, host string, start int64, fname string) error {
 func GetSessions(db *sql.DB, page, limit int64) ([]Row, error) {
 	rows, err := sq.Select("host", "start", "fname").
 		From("sessions").
+		OrderBy("start desc").
 		Limit(uint64(limit)).
 		Offset(uint64((page - 1) * limit)).
 		RunWith(db).Query()
