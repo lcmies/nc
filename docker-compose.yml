@@ -6,7 +6,7 @@ services:
     restart: always
     volumes:
       - ./data:/go/src/app/data
-      - ./nc.db:/go/src/app/nc.db
+      - ./db:/go/src/app/db
     ports:
       - "29055:9000/tcp"
       - "23055:3000/tcp"
