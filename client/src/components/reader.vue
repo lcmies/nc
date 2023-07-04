@@ -44,7 +44,7 @@ onUnmounted(() => {
 
 <template lang="pug">
 .modal.d-block
-  .modal-dialog.modal-xl
+  .modal-dialog.modal-dialog-scrollable.modal-xl
     .modal-content
       .modal-header
         span
