@@ -41,7 +41,7 @@ const vmstatData = computed(() => {
 
     const data = line.split(/\s+/)
     cpu.push(100 - parseInt(data[14]))
-    freemem.push(data[3])
+    freemem.push(parseInt(data[3]) + parseInt(data[4]) + parseInt(data[5]))
   })
 
   return {
