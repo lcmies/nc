@@ -1,11 +1,13 @@
 <script setup>
 import { toRefs, ref, onMounted, onUnmounted, computed } from 'vue'
+import Vmstat from "./plugins/vmstat.vue"
 
 const props = defineProps({ fname: String })
 const { fname } = toRefs(props)
 const rawContent = ref("")
 const pos = ref(0)
 const autorefresh = ref(false)
+const plugin = ref("")
 
 const content = computed(() => {
   let text = rawContent.value.replaceAll(/\r\n/g, "\n")
@@ -58,15 +60,23 @@ onUnmounted(() => {
 
 <template lang="pug">
 .modal.d-block
-  .modal-dialog.modal-dialog-scrollable.modal-xl
+  .modal-dialog.modal-dialog-scrollable.modal-fullscreen
     .modal-content
       .modal-header
-        span
-          input.btn-check#autofresh(type='checkbox' :value='autorefresh')
-          label.btn.btn-outline-primary(for='autofresh' @click='autorefresh=!autorefresh') ↺
+        div.d-flex.align-items-center
+          div
+            input.btn-check#autofresh(type='checkbox' :value='autorefresh')
+            label.btn.btn-outline-primary(for='autofresh' @click='autorefresh=!autorefresh') ↺
+          small.ps-5.pe-2 Plugin
+          select.form-select.form-select-sm(v-model="plugin")
+            option(value="") None
+            option(value="vmstat") vmstat
         button.btn-close(@click='$emit("close")')
-      .modal-body
+      .modal-body(v-if="plugin == ''")
         pre {{ content }}
+      .modal-body(v-if="plugin == 'vmstat'")
+        Vmstat(:content="content")
+
 
 </template>
 
