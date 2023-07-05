@@ -1,30 +1,44 @@
 <script setup>
-import { toRefs, ref, onMounted, onUnmounted, watch } from 'vue'
+import { toRefs, ref, onMounted, onUnmounted, computed } from 'vue'
 
 const props = defineProps({ fname: String })
 const { fname } = toRefs(props)
-const content = ref("")
+const rawContent = ref("")
 const pos = ref(0)
 const autorefresh = ref(false)
+
+const content = computed(() => {
+  let text = rawContent.value.replaceAll(/\r\n/g, "\n")
+  text = text.replaceAll(/[^\r\n]*\r/g, "")
+  return text
+})
 
 let intervalId = 0
 
 function fetchContent() {
-  fetch(`/data/${fname.value}`, {
+  return fetch(`/data/${fname.value}`, {
     headers: {
       "Range": `bytes=${pos.value}-`
     }
   }).then((res) => {
     if (res.status < 300) {
       pos.value = parseInt(res.headers.get("Content-Range").match(/\/([0-9]+)$/)[1])
-      res.text().then((txt) => content.value += txt)
+      return res.text().then((txt) => rawContent.value += txt)
     }
   })
 }
 
 function refreshContent() {
   if (!autorefresh.value) return
-  fetchContent()
+  fetchContent().then(() => {
+    const elm = document.querySelector(".modal-body")
+    if (!elm) return
+    elm.scrollTo({
+      top: elm.scrollHeight,
+      left: 0,
+      behavior: "instant"
+    })
+  })
 }
 
 onMounted(() => {
@@ -34,7 +48,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   autorefresh.value = false
-  content.value = ""
+  rawContent.value = ""
   pos.value = 0
   clearInterval(intervalId)
 })
