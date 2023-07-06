@@ -7,6 +7,7 @@ const props = defineProps({ content: String })
 const { content } = toRefs(props)
 
 const points = ref("60")
+const pointsOption = ["60", "300", "600", "1800", "3600", "21600", "43200"]
 
 function chartOptions(title) {
   return {
@@ -74,12 +75,7 @@ const memData = computed(() => {
 .d-flex.align-items-center
   small.pe-2 Points
   select.form-select.form-select-sm(v-model="points")
-    option(value="30") 30
-    option(value="60") 60
-    option(value="120") 120
-    option(value="300") 300
-    option(value="600") 600
-    option(value="1200") 1200
+    option(v-for='op in pointsOption' :value='op') {{ op }}
 Line(:data="cpuData" :options="chartOptions('CPU')")
 Line(:data="memData" :options="chartOptions('Free MEM')")
 
